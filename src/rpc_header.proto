@@ -1,0 +1,16 @@
+syntax = "proto3";      // 声明protobuf版本
+
+package mprpc;          // 声明了代码所在的包（对于c++来说是namespace）
+
+/*
+    生成命令：protoc rpc_header.proto --cpp_out=./
+*/
+
+// 数据头的消息类型
+// 服务名、方法名、参数长度(字符串形式)
+message RpcHeader{
+    bytes service_name = 1;
+    bytes method_name = 2;
+    uint32 args_size = 3;
+}
+

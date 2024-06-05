@@ -1,0 +1,88 @@
+// 识别proto文件需要，安装 vscode-proto3 插件
+syntax = "proto3";          // 声明protobuf版本
+
+package fixbug;             // 声明了代码所在的包（对于c++来说是namespace）
+
+option cc_generic_services = true;      // 定义该选项，表示生成 service服务类型 和 rpc方法描述
+
+/*
+protobuf 不提供任何rpc服务，只是提供消息类型（方法描述，方法参数，方法返回值）的序列化和反序列化
+
+常用的消息类型：
+    数据（单个数据）、列表（数组）、映射表（map表）
+其他笔记：
+    1. 建议将string类型写为bytes类型，减少protobuf的类型转换
+    2. 类型嵌套相关
+    3. 列表相关          repeated
+    4. 映射相关          map<int32, string> test
+    5. 因为rpc过程中，不仅仅要传递函数参数，还需要传递调用的方法名称，所以需要定义一个类型来描述rpc方法。
+       那么，如何在protobuf中定义 描述rpc方法的服务类型 呢？    service
+       注意：当在proto文件中定义 描述rpc方法的服务类型 时，默认是不会生成方法描述的，需要增加option选项。
+*/
+
+
+message ResultCode {
+    int32 errcode = 1;
+    string errmsg = 2;
+}
+
+
+// 定义登录消息类型
+message LoginRequest {
+    // string name = 1;
+    // string pwd = 2;
+    bytes name = 1;                 // 将string类型定义为bytes类型（1bytes表示8位）
+    bytes pwd = 2;
+    map<int32, string> test = 3;
+}
+
+
+// 定义登录响应消息类型
+message LoginResponse{
+    // int32 errCode = 1;      // 4字节整数
+    // bytes errMsg = 2;
+    ResultCode result = 1;
+
+    bool success = 2;
+}
+
+
+// 定义获取好友列表请求的消息类型
+message GetFriendListsRequest{
+    uint32 userId = 1;
+}
+
+
+message User{
+    bytes name = 1;
+    uint32 age = 2;
+    
+    enum Sex{
+        MAN = 0;
+        WOMAN = 1;
+    }
+    Sex sex = 3;
+}
+
+
+// 定义获取好友列表响应的消息类型
+message GetFriendListsResponse{
+    ResultCode result = 1;
+    repeated User friend_list = 2;
+    
+    bool success = 3;
+    
+}
+
+
+/*
+    定义描述rpc方法的服务类型 -- 用于生成c++的 UserServiceRpc类。
+    注意，protobuf不提供任何rpc服务，仅用于提供描述rpc方法的类型（如，UserServiceRpc），来描述rpc方法
+*/
+service UserServiceRpc{
+    rpc Login(LoginRequest) returns(LoginResponse);
+    rpc GetFriendLists(GetFriendListsRequest) returns(GetFriendListsResponse);
+    
+}
+
+

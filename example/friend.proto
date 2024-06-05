@@ -1,0 +1,41 @@
+/*
+    生成命令：
+        protoc friend.proto --cpp_out=./
+*/
+
+
+syntax = "proto3";                      // 声明protobuf版本
+package fixbug;                         // 声明了代码所在的包（对于c++来说是namespace）
+
+option cc_generic_services = true;      // 定义该选项，表示生成 service服务类型 和 rpc方法描述
+// option java_generic_services = true;
+
+
+message ResultCode{
+    int32 errcode = 1;
+    string errmsg = 2;
+}
+
+
+// ********************************************* 登录相关描述
+// 定义请求消息类型
+message GetFriendsListRequest{
+    uint32 userid = 1;
+}
+
+
+// 定义响应消息类型
+message GetFriendsListResponse{
+    ResultCode result = 1;
+    repeated bytes friends = 2;
+}
+
+
+// ********************************************* 好友模块相关描述
+// 定义 描述rpc方法服务类型（用于后续生成对应的类）
+service FriendServiceRpc{
+    rpc GetFriendsList(GetFriendsListRequest) returns (GetFriendsListResponse);
+}
+
+
+
