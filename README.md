@@ -77,4 +77,4 @@ cd bin
 ./provider -i test.conf
 ./consumer -i test.conf
 ```
-![test](./imgs/test.jpg "test")
+![test](./imgs/test.png "test")
