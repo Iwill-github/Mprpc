@@ -72,5 +72,9 @@ sudo chmode 777 autobuild.sh
 
 
 # 3. 项目测试
+```bash
 cd bin
-xx
+./provider -i test.conf
+./consumer -i test.conf
+```
+![test](./imgs/test.jpg "test")
