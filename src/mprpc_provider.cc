@@ -60,7 +60,7 @@ void RpcProvider::Run(){
     server.setMessageCallback(std::bind(&RpcProvider::OnMessage, this, 
         std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));  // 将OnMessage适配为3参数函数（OnMessage本是4参数函数）
 
-    // 设置 muduo库的线程数量
+    // 设置 muduo库的线程池数量
     server.setThreadNum(4);
 
 
@@ -82,7 +82,6 @@ void RpcProvider::Run(){
             zkCli.Create(method_path.c_str(), method_path_data_buffer, strlen(method_path_data_buffer), ZOO_EPHEMERAL);
         }
     }
-    
 
     LOG_INFO("%s:%s:%d => RpcProvider start service at ip:%s port:%d", 
         __FILE__, __FUNCTION__, __LINE__, ip.c_str(), port)
