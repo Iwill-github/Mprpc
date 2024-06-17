@@ -106,7 +106,7 @@ void MprpcChannel::CallMethod(const google::protobuf::MethodDescriptor *method,
     std::string ip = host_data.substr(0, idx);
     uint16_t port = atoi(host_data.substr(idx + 1, host_data.size() - 1 - idx + 1).c_str());
 
-
+    // 创建socket连接
     struct sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(port);
