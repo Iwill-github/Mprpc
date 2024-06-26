@@ -1,5 +1,6 @@
 #include "mprpc_config.h"
 #include "logger.h"
+// #include "Logging.h"
 
 #include <iostream>
 
@@ -23,6 +24,7 @@ void MprpcConfig::LoadConfigFile(const char *config_file){
     FILE *pf = fopen(config_file, "r");
     if(nullptr == pf){
         LOG_ERROR("%s:%s:%d => %s file error!", __FILE__, __FUNCTION__, __LINE__, config_file);
+        // LOG << "config file error!";
         exit(EXIT_FAILURE);
     }
 

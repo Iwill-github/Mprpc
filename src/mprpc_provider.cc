@@ -2,6 +2,7 @@
 #include "mprpc_application.h"
 #include "rpc_header.pb.h"
 #include "logger.h"
+// #include "Logging.h"
 #include "zookeeper_util.h"
 
 #include <functional>
@@ -26,8 +27,8 @@ void RpcProvider::NotifyService(google::protobuf::Service *service){
     // 获取服务对象的名字
     std::string service_name = pserviceDesc->name();
 
-    LOG_INFO("%s:%s:%d => service_name:%s", 
-        __FILE__, __FUNCTION__, __LINE__, service_name.c_str())
+    LOG_INFO("%s:%s:%d => service_name:%s", __FILE__, __FUNCTION__, __LINE__, service_name.c_str())
+    // LOG << "service_name:" << service_name;
 
     for(int i = 0; i < methodCnt; ++i){
         // 获取了服务对象指定下标的服务方法的描述（抽象描述）
@@ -35,8 +36,8 @@ void RpcProvider::NotifyService(google::protobuf::Service *service){
         std::string method_name = pmethodDesc->name();
         sevice_info.m_methodMap.insert({method_name, pmethodDesc});
 
-        LOG_INFO("%s:%s:%d => method_name:%s", 
-            __FILE__, __FUNCTION__, __LINE__, method_name.c_str())
+        LOG_INFO("%s:%s:%d => method_name:%s", __FILE__, __FUNCTION__, __LINE__, method_name.c_str())
+        // LOG << "method_name:" << method_name;
     }
 
     sevice_info.m_service = service;
@@ -83,8 +84,8 @@ void RpcProvider::Run(){
         }
     }
 
-    LOG_INFO("%s:%s:%d => RpcProvider start service at ip:%s port:%d", 
-        __FILE__, __FUNCTION__, __LINE__, ip.c_str(), port)
+    LOG_INFO("%s:%s:%d => RpcProvider start service at ip:%s port:%d", __FILE__, __FUNCTION__, __LINE__, ip.c_str(), port)
+    // LOG << "RpcProvider start service at ip:" << ip << " port:" << port;
     printf("RpcProvider start service at ip:%s port:%d", ip.c_str(), port);
 
     // 启动网络服务
@@ -144,6 +145,7 @@ void RpcProvider::OnMessage(
         args_size = rpcHeader.args_size();
     }else{                                              // 数据头反序列化失败
         LOG_ERROR("%s:%s:%d => rpc_header_str:%s parse errno!", __FILE__, __FUNCTION__, __LINE__, rpc_header_str.c_str());
+        // LOG << "rpc_header_str:" << rpc_header_str << " parse errno!";
         return;
     }
 
@@ -164,11 +166,13 @@ void RpcProvider::OnMessage(
     auto it = m_serviceInfoMap.find(service_name);
     if( it == m_serviceInfoMap.end() ){
         LOG_ERROR("%s:%s:%d => %s is not exist!", __FILE__, __FUNCTION__, __LINE__, service_name.c_str())
+        // LOG << "service: " << service_name << " is not exist!";
         return;
     }
     auto mit = it->second.m_methodMap.find(method_name);
     if( mit == it->second.m_methodMap.end() ){
         LOG_ERROR("%s:%s:%d => %s:%s is not exist!", __FILE__, __FUNCTION__, __LINE__, service_name.c_str(), method_name.c_str())
+        // LOG << "method: " << method_name << " is not exist!";
         return;
     }
 
@@ -179,6 +183,7 @@ void RpcProvider::OnMessage(
     google::protobuf::Message *request = service->GetRequestPrototype(method).New();
     if( !request->ParseFromString(args_str) ){
         LOG_INFO("%s:%s:%d => request parse error! content: %s", __FILE__, __FUNCTION__, __LINE__, args_str.c_str());
+        // LOG << "request parse error! content: " << args_str;
         return;
     }
     google::protobuf::Message *response = service->GetResponsePrototype(method).New();
@@ -205,8 +210,8 @@ void RpcProvider::SendRpcResponse(
         // 序列化成功后，通过网络把rpc方法执行的结果发送回rpc调用方（caller）
         conn->send(response_str);
     }else{
-        LOG_ERROR("%s:%s:%d => serialize response_str error!", 
-            __FILE__, __FUNCTION__, __LINE__);
+        LOG_ERROR("%s:%s:%d => serialize response_str error!", __FILE__, __FUNCTION__, __LINE__);
+        // LOG << "serialize response_str error!";
     }
 
     conn->shutdown();   // 模拟tcp的短连接服务，由rpc_provider主动断开连接

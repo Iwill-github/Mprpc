@@ -2,6 +2,7 @@
 #include "rpc_header.pb.h"
 #include "mprpc_application.h"
 #include "logger.h"
+// #include "Logging.h"
 #include "zookeeper_util.h"
 
 #include <google/protobuf/descriptor.h>     // 对应描述的功能
@@ -40,6 +41,7 @@ void MprpcChannel::CallMethod(const google::protobuf::MethodDescriptor *method,
         args_size = args_str.size();
     }else{
         LOG_ERROR("%s:%s:%d => serialize request error!", __FILE__, __FUNCTION__, __LINE__);
+        // LOG << "serialize request error!";
         return;
     }
 
@@ -55,6 +57,7 @@ void MprpcChannel::CallMethod(const google::protobuf::MethodDescriptor *method,
         header_size = rpc_header_str.size();
     }else{
         LOG_ERROR("%s:%s:%d => serialize request error!", __FILE__, __FUNCTION__, __LINE__);
+        // LOG << "serialize request error!";
         return;
     }
 
@@ -79,6 +82,7 @@ void MprpcChannel::CallMethod(const google::protobuf::MethodDescriptor *method,
     
     if( -1 == clientfd ){
         LOG_ERROR("%s:%s:%d => create socket error! errno:%d", __FILE__, __FUNCTION__, __LINE__, errno);
+        // LOG << "create socket error! errno:" << errno;
         char buf[512] = {0};
         sprintf(buf, "create socket error! errno:%d", errno);
         controller->SetFailed(buf);
@@ -115,6 +119,7 @@ void MprpcChannel::CallMethod(const google::protobuf::MethodDescriptor *method,
     // 连接rpc服务节点
     if( -1 == connect(clientfd, (struct sockaddr*)&server_addr, sizeof(server_addr)) ){
         LOG_ERROR("%s:%s:%d => connect error! errno:%d", __FILE__, __FUNCTION__, __LINE__, errno);  
+        // LOG << "connect error! errno:" << errno;
         char buf[512] = {0};
         sprintf(buf, "connect error! errno:%d", errno);
         controller->SetFailed(buf);
@@ -124,6 +129,7 @@ void MprpcChannel::CallMethod(const google::protobuf::MethodDescriptor *method,
     // 发送rpc请求
     if( -1 == send(clientfd, send_rpc_str.c_str(), send_rpc_str.size(), 0) ){
         LOG_ERROR("%s:%s:%d => send error! errno:%d", __FILE__, __FUNCTION__, __LINE__, errno);
+        // LOG << "send error! errno:" << errno;
         char buf[512] = {0};
         sprintf(buf, "send error! errno:%d", errno);
         controller->SetFailed(buf);
@@ -135,6 +141,7 @@ void MprpcChannel::CallMethod(const google::protobuf::MethodDescriptor *method,
     int recv_size = 0;
     if( -1 == (recv_size = recv(clientfd, recv_buf, 1024, 0)) ){
         LOG_ERROR("%s:%s:%d => recv error! errno:%d", __FILE__, __FUNCTION__, __LINE__, errno);
+        // LOG << "recv error! errno:" << errno;
         char buf[512] = {0};
         sprintf(buf, "recv error! errno:%d", errno);
         controller->SetFailed(buf);
@@ -146,6 +153,7 @@ void MprpcChannel::CallMethod(const google::protobuf::MethodDescriptor *method,
     // if( !response->ParseFromString(response_str) ){
     if(!response->ParseFromArray(recv_buf, recv_size)){
         LOG_ERROR("%s:%s:%d => parse error! response_str: %s", __FILE__, __FUNCTION__, __LINE__, recv_buf);
+        // LOG << "parse error! errno:%d", errno;
         char buf[512] = {0};
         sprintf(buf, "parse error! errno:%d", errno);
         controller->SetFailed(buf);

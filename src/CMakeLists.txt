@@ -10,9 +10,11 @@ set(SRC_LIST
     zookeeper_util.cc
 )
 
+aux_source_directory(./dualbuf_logger DUALBUF_LOGGER)
+
 # 将源代码编译为动态库文件 mprpc
 # add_library(mprpc SHARED ${SRC_LIST})     # 因为 muduo_base muduo_net 是静态库。需要保证该静态库以以PIC方式编译（即，可以在）
-add_library(mprpc ${SRC_LIST})
+add_library(mprpc ${SRC_LIST} ${DUALBUF_LOGGER})
 
 # 设置mprpc框架的 依赖库（这些是静态库）
 target_link_libraries(mprpc 
