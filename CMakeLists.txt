@@ -12,7 +12,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 # 设置项目编译头文件搜索路径（该配置使导入头文件十分方便） -I
 include_directories(
-    ${PROJECT_SOURCE_DIR}/src/include
+    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/include/dualbuf_logger
     ${PROJECT_SOURCE_DIR}/example
 )
 
