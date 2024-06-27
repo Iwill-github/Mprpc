@@ -1,7 +1,7 @@
-# # rpc节点的ip地址、port端口号
+# rpc节点的ip地址、port端口号
 rpcserver_ip = 127.0.0.1
 rpcserver_port = 8002
 
-# # zookeeper的ip地址、port端口号
+# zookeeper的ip地址、port端口号
 zookeeper_ip = 127.0.0.1
 zookeeper_port = 2181

@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 #include <mutex>
+#include <thread>
 
 enum LogLevel{
     INFO,   // 普通信息
